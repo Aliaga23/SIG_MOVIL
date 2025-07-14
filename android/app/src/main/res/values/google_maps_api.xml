@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Google Maps API Configuration -->
+    <string name="google_maps_key" templateMergeStrategy="preserve" translatable="false">AIzaSyDT4RYNcUdQ6279kqNgHV1Tgn2d9biKKY</string>
+    
+    <!-- Performance optimizations -->
+    <bool name="google_maps_lite_mode">false</bool>
+    <bool name="google_maps_use_texture_view">true</bool>
+</resources>
