@@ -2,6 +2,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import '../models/auth_models.dart';
 import '../services/auth_service.dart';
+import '../services/simple_location_service.dart';
 
 class AuthProvider extends ChangeNotifier {
   final AuthService _authService = AuthService();
@@ -29,8 +30,10 @@ class AuthProvider extends ChangeNotifier {
       await _storage.write(key: 'access_token', value: response.accessToken);
       await _storage.write(key: 'token_type', value: response.tokenType);
 
-      // Simular obtención de datos de usuario del token
       _user = User(email: email, role: 'distribuidor');
+
+      // Iniciar tracking GPS automáticamente después del login
+      SimpleLocationService.instance.startBackgroundTracking();
 
       _setLoading(false);
       return true;
@@ -43,6 +46,9 @@ class AuthProvider extends ChangeNotifier {
 
   // Método para logout
   Future<void> logout() async {
+    // Detener tracking GPS
+    SimpleLocationService.instance.stop();
+    
     await _storage.deleteAll();
     _user = null;
     notifyListeners();
@@ -52,8 +58,6 @@ class AuthProvider extends ChangeNotifier {
   Future<void> checkAuthStatus() async {
     final token = await _storage.read(key: 'access_token');
     if (token != null) {
-      // Aquí podrías verificar si el token es válido
-      // Por ahora asumimos que sí
       _user = User(email: '', role: '');
       notifyListeners();
     }
